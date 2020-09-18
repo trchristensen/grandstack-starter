@@ -1,0 +1,37 @@
+
+type User {
+  userId: ID!
+  name: String
+}
+
+type Post {
+  postId: ID!
+  title: String!
+  content: String!
+  comments: [Comment] @relation(name: "COMMENT_ON", direction: "IN")
+  published: DateTime
+  author: User @relation(name: "POSTED_BY", direction: "OUT")
+}
+
+type Comment { 
+  commentId: ID!
+  content: String!
+  published: DateTime
+}
+
+type Category {
+  name: ID!
+  posts: [Post] @relation(name: "IN_CATEGORY", direction: "IN")
+}
+
+type Mutation {
+  mergePostCategory(categories: [String!]!, postId: ID!): Post
+  @cypher(
+    statement: "MATCH (p:Post {postId: $postId}) UNWIND $categories AS cat MERGE (c:Category {name: cat}) MERGE (b)-[:IN_CATEGORY]->(c) RETURN p"
+  )
+}
+
+type Query {
+  userCount: Int! @cypher(statement: "MATCH (u:User) RETURN COUNT(u)")
+
+}
