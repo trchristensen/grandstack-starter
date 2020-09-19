@@ -27,14 +27,13 @@ const Navbar: React.FC<any> = (props) => {
       justify="space-between"
       wrap="wrap"
       padding="1.5rem"
-      borderBottom="1px solid black"
-      bg={colorMode === "light" ? "gray.900" : "teal.500"}
-      color={colorMode === "light" ? "teal.300" : "white"}
+      bg={colorMode === "light" ? "gray.800" : "gray.200"}
+      color={colorMode === "light" ? "gray.200" : "gray.800"}
       {...props}
     >
       <Flex align="center" mr={5}>
         <Heading as="h1" size="lg" letterSpacing={"-.1rem"}>
-          The Next Project
+          JuiceSauce
         </Heading>
       </Flex>
 
@@ -43,15 +42,15 @@ const Navbar: React.FC<any> = (props) => {
         width="auto"
         alignItems="center"
         flexGrow={1}
-        color={colorMode === "light" ? "teal.300" : "white"}
+        color={colorMode === "light" ? "gray.200" : "gray.800"}
       >
-        <MenuItems>
+       
           <Link to="/">Home</Link>
-        </MenuItems>
+       
         <MenuItems>Blogs</MenuItems>
-        <MenuItems>
+        
           <Link to="/dashboard">Dashboard</Link>
-        </MenuItems>
+       
         <MenuItems>Contact</MenuItems>
       </Box>
       <Box display="block" mt={{ base: 4, md: 0 }}>
