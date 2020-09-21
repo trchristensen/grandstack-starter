@@ -1,16 +1,38 @@
 import { gql } from "@apollo/client";
 
-export const CREATE_USER_NODE = gql`
-mutation(){
-  mutation($name: String!, $email: String!, $password: String!) {
-  CreateUser(name: $name, email: $email, password: $password) {
-    userId
-    name
-    email
-    password
+// export const CREATE_USER_NODE = gql`
+// mutation(){
+//   mutation($name: String!, $email: String!, $password: String!) {
+//   CreateUser(name: $name, email: $email, password: $password) {
+//     userId
+//     name
+//     email
+//     password
+//   }
+// }
+// }`
+
+export const CREATE_RECIPE_WITH_INGREDIENTS_AND_CREATOR = gql`
+  mutation(
+    $recipeId: ID!
+    $name: String!
+    $description: String!
+    #$published: DateTime,
+    $userId: String!
+    $ingredients: [CustomIngredientsInput]
+  ) {
+    createRecipeWithIngredients(
+      recipeId: $recipeId
+      name: $name
+      description: $description
+      # published: DateTime,
+      userId: $userId
+      ingredients: $ingredients
+    ) {
+      recipeId
+    }
   }
-}
-}`;
+`;
 
 export const CREATE_RECIPE_NODE = gql`
   mutation(

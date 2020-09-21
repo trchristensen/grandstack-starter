@@ -1,88 +1,116 @@
-import { Box, Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure } from '@chakra-ui/core';
-import React from 'react';
+import {
+  Box,
+  Button,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  Radio,
+  RadioGroup,
+  useDisclosure,
+} from "@chakra-ui/core";
+import React from "react";
 import Select from "react-select";
-import { useQuery, gql, useLazyQuery } from "@apollo/client";
-import { onError } from "@apollo/client/link/error";
-import { Flavor } from '../../@types/schema';
-
-// import { CREATE_RECIPE_NODE } from '../../graphql/mutations'
-
+import makeAnimated from "react-select/animated";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { Flavor } from "../../@types/schema";
+import { SIMPLE_FLAVOR_QUERY } from "../../graphql/queries";
+import { CREATE_RECIPE_NODE, CREATE_RECIPE_WITH_INGREDIENTS_AND_CREATOR } from '../../graphql/mutations';
+import { CreateRandomID } from '../../helpers/functions'
 interface AddButtonProps {
   children?: React.ReactNode;
 }
 
-const options = [
-  { value: 'blues', label: 'Blues' },
-  { value: 'rock', label: 'Rock' },
-  { value: 'jazz', label: 'Jazz' },
-  { value: 'orchestra', label: 'Orchestra' } 
-];
+const animatedComponents = makeAnimated();
 
-const SIMPLE_FLAVOR_QUERY = gql`
-  query {
-    Flavor {
-      flavorId
-      name
-      company {
-        name
-      }
-    }
-  }
-`;
+const AddButton: React.FC<AddButtonProps> = ({ children }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-// interface Flavors extends Array<Flavor>{}
-// let Flavors: any = {
-//   <string[]> p1: [...]
-// }
-
-const AddButton: React.FC<AddButtonProps> = ({children}) => {
-
-  const [flavorsList, setFlavorsList] = React.useState<Flavor[]>();
+  const handleModalOpen = () => {
+    onOpen();
+    getFlavors();
+  };
 
   const [
     getFlavors,
     { loading, data, error },
   ] = useLazyQuery(SIMPLE_FLAVOR_QUERY, { errorPolicy: "all" });
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [createRecipe] = useMutation(
+    CREATE_RECIPE_WITH_INGREDIENTS_AND_CREATOR,
+    {
+      onCompleted: () => {
+        console.log(`Recipe ${name?.toUpperCase} has been created!`);
+      },
+      onError: (err) => {
+        console.error(err);
+      },
+    }
+  );
 
-  const [selectedOption, setSelectedOption] = React.useState<any>()
-  const handleChange = (selectedOption:any) => {
+  const [flavorsList, setFlavorsList] = React.useState<Flavor[]>();
+  const [selectedOption, setSelectedOption] = React.useState<any>();
+  const [createRecipeInfo, setCreateRecipeInfo] = React.useState();
+  const [measurement, setMeasurement] = React.useState<string>('g');
+  const [name, setName] = React.useState<string>();
 
+  const handleChange = (selectedOption: any) => {
     setSelectedOption({ selectedOption });
-    console.log("option selected: ", selectedOption);
   };
 
+  const handleCreateRecipe = (e:any) => {
+    e.preventDefault();
+    // WE NEED SOME VALIDATION RIGHT HERE.
 
-  const handleModalOpen = () => {
-    onOpen();
-    getFlavors();
+    const recipeInfo = [
+      ...selectedOption.selectedOption
+    ];
+
+    const newFlavorInfo = recipeInfo.map(flavor => {
+      const qty = (document.getElementById(
+        `${flavor.value}`
+      ) as HTMLInputElement).value;
+
+      let rObj:any = {}
+      rObj['amount'] = parseInt(qty)
+      rObj['measurement'] = measurement;
+      rObj['flavorId'] = flavor.value;
+      return rObj;
+    });
+
+    const createRecipePayload: any = {
+      recipeId: CreateRandomID(32),
+      name: name,
+      description: "hardcoded description until we get an input field",
+      // published: new Date().toISOString(),
+      userId: "50c0c7f3-f819-4696-b582-86d97ba59dde",
+      ingredients: newFlavorInfo,
+    };
+
+    alert(JSON.stringify(createRecipePayload))
+    createRecipe(createRecipePayload);
+
   }
 
-
   React.useEffect(() => {
-    console.log(data?.Flavor);
-
-    var result = data?.Flavor.map((flavor:Flavor) => ({
+    var result = data?.Flavor.map((flavor: Flavor) => ({
       value: flavor.flavorId,
       label: flavor.name,
     }));
-    
     setFlavorsList(result);
-
-
-  }, [data])
-
-    const link = onError(({ graphQLErrors, networkError }) => {
-      if (graphQLErrors)
-        graphQLErrors.map(({ message, locations, path }) =>
-          console.log(
-            `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-          )
-        );
-
-      if (networkError) console.log(`[Network error]: ${networkError}`);
-    });
+  }, [data]);
 
   return (
     <React.Fragment>
@@ -90,39 +118,94 @@ const AddButton: React.FC<AddButtonProps> = ({children}) => {
         <Button onClick={handleModalOpen} className="w-full flex">
           {children}
         </Button>
-
-        <Button className="block w-full mt-4" onClick={() => getFlavors()}>
-          Get Flavors
-        </Button>
-        {flavorsList && JSON.stringify(flavorsList)}
       </Box>
-
       <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent className="rounded-lg">
           <ModalHeader>Create a new Recipe</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <form>
-              <Select
-                className="form-control"
-                options={flavorsList}
-                onChange={handleChange}
-              ></Select>
-              <Button className="form-control">Create</Button>
+            <form
+              id="recipeForm"
+              onSubmit={(e: React.FormEvent) => handleCreateRecipe(e)}
+            >
+              <FormControl className="mb-3" isRequired>
+                <FormLabel htmlFor="fname">Recipe Name</FormLabel>
+                <Input
+                  value={name}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setName(e.target.value)
+                  }
+                  id="recipeName"
+                  placeholder="Recipe name"
+                />
+              </FormControl>
+              <FormControl className="mb-3" as="fieldset">
+                <FormLabel as="legend">Flavor Unit of Measurement</FormLabel>
+                <RadioGroup
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setMeasurement(e.target.value)
+                  }
+                  value={measurement}
+                  className="flex flex-wrap justify-normal"
+                  defaultValue="g"
+                >
+                  <Radio className="px-2" value="g">
+                    grams
+                  </Radio>
+                  <Radio className="px-2 pl-0" value="drops">
+                    Drops
+                  </Radio>
+                  <Radio className="px-2" value="ml">
+                    mL
+                  </Radio>
+                </RadioGroup>
+              </FormControl>
+              <FormControl className="mb-3" isRequired>
+                <Select
+                  isMulti
+                  name="colors"
+                  options={flavorsList}
+                  closeMenuOnSelect={false}
+                  components={animatedComponents}
+                  className="basic-multi-select"
+                  classNamePrefix="select"
+                  onChange={handleChange}
+                />
+                {selectedOption?.selectedOption &&
+                  selectedOption?.selectedOption.map((row: any) => (
+                    <Box
+                      className="flavorQty my-8 p-2 py-4 border rounded bg-gray-200"
+                      key={row.value}
+                    >
+                      <Box className="mb-2 font-semibold">{row.label}</Box>
+                      <Box>
+                        <label>Quantity ({measurement})</label>
+                        <NumberInput size="sm">
+                          <NumberInputField
+                            className="flavorQty__input"
+                            id={row.value}
+                          />
+                          <NumberInputStepper>
+                            <NumberIncrementStepper />
+                            <NumberDecrementStepper />
+                          </NumberInputStepper>
+                        </NumberInput>
+                      </Box>
+                    </Box>
+                  ))}
+              </FormControl>
+              <Button type="submit" variantColor="blue" mr={3}>
+                Create Recipe
+              </Button>
+              <Button onClick={onClose}>Cancel</Button>
             </form>
           </ModalBody>
-
-          <ModalFooter>
-            <Button variantColor="blue" mr={3}>
-              Save
-            </Button>
-            <Button onClick={onClose}>Cancel</Button>
-          </ModalFooter>
+          <ModalFooter></ModalFooter>
         </ModalContent>
       </Modal>
     </React.Fragment>
   );
 };
 
-export default AddButton
+export default AddButton;
