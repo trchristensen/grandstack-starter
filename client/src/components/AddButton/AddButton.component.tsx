@@ -78,29 +78,38 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
       ...selectedOption.selectedOption
     ];
 
-    const newFlavorInfo = recipeInfo.map(flavor => {
+
+    const newFlavorInfo:any = recipeInfo.map(flavor => {
       const qty = (document.getElementById(
         `${flavor.value}`
       ) as HTMLInputElement).value;
 
-      let rObj:any = {}
+      let rObj: {amount?: number, measurement?: string, flavorId?: string} = {}
       rObj['amount'] = parseInt(qty)
       rObj['measurement'] = measurement;
       rObj['flavorId'] = flavor.value;
       return rObj;
     });
 
-    const createRecipePayload: any = {
+    type recipePayload = {
+      recipeId: string;
+      name: string | any;
+      description: string;
+      userId: string;
+      ingredients: [any];
+    };
+
+    const createRecipePayload: recipePayload = {
       recipeId: CreateRandomID(32),
       name: name,
       description: "hardcoded description until we get an input field",
       // published: new Date().toISOString(),
       userId: "50c0c7f3-f819-4696-b582-86d97ba59dde",
-      ingredients: newFlavorInfo,
+      ingredients: newFlavorInfo
     };
 
     alert(JSON.stringify(createRecipePayload))
-    createRecipe(createRecipePayload);
+    createRecipe({ variables: createRecipePayload });
 
   }
 
@@ -148,7 +157,7 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
                   }
                   value={measurement}
                   className="flex flex-wrap justify-normal"
-                  defaultValue="g"
+                  defaultValue="%"
                 >
                   <Radio className="px-2" value="g">
                     grams
@@ -158,6 +167,9 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
                   </Radio>
                   <Radio className="px-2" value="ml">
                     mL
+                  </Radio>
+                  <Radio className="px-2" value="%">
+                    %
                   </Radio>
                 </RadioGroup>
               </FormControl>

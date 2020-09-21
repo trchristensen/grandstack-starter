@@ -41,10 +41,11 @@ const Post: React.FC<Recipe> = ({...recipe}) => {
               recipe.ingredients.map((ingredient) => {
                 return (
                   <Box className="bg-gray-100 text-gray-700 font-semibold p-1 rounded text-xs flex flex-row">
+                    {JSON.stringify(ingredient)}
                     <span className="mr-1" role="img" aria-label="emoji">
                       🍰
                     </span>
-                    <Text>{ingredient.Flavor.name}</Text>
+                    <Text>{ingredient.Flavor.name} - {ingredient.amount} ({ingredient.measurement}).</Text>
                   </Box>
                 );
               })
