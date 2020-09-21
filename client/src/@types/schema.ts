@@ -7,7 +7,7 @@ export interface Recipe {
   creator: User;
   parent?: Recipe;
   ingredients?: _RecipeIngredients[];
-  tags?: Tag;
+  tags?: ITag[];
 }
 
 export interface _RecipeIngredients {
@@ -20,9 +20,9 @@ export interface _RecipeIngredients {
   }
 }
 
-export interface Tag {
-  tagId: string;
-  name: string
+export interface ITag {
+  tagId?: string;
+  name?: string
 }
 
 export interface User {

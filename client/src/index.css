@@ -16,3 +16,25 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+/* recipe post */
+
+.ingredientsBar > :nth-child(1) {
+  @apply bg-red-300
+}
+
+.ingredientsBar > :nth-child(2) {
+  @apply bg-yellow-300
+}
+
+.ingredientsBar > :nth-child(3) {
+  @apply bg-green-300
+}
+
+.ingredientsBar > :nth-child(4) {
+  @apply bg-blue-300
+}
+
+.ingredientsBar > :nth-child(4) {
+  @apply bg-purple-300
+}

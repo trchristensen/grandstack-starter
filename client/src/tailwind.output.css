@@ -22397,6 +22397,38 @@ code {
     monospace;
 }
 
+/* recipe post */
+
+.ingredientsBar > :nth-child(1) {
+  --bg-opacity: 1;
+  background-color: #feb2b2;
+  background-color: rgba(254, 178, 178, var(--bg-opacity))
+}
+
+.ingredientsBar > :nth-child(2) {
+  --bg-opacity: 1;
+  background-color: #faf089;
+  background-color: rgba(250, 240, 137, var(--bg-opacity))
+}
+
+.ingredientsBar > :nth-child(3) {
+  --bg-opacity: 1;
+  background-color: #9ae6b4;
+  background-color: rgba(154, 230, 180, var(--bg-opacity))
+}
+
+.ingredientsBar > :nth-child(4) {
+  --bg-opacity: 1;
+  background-color: #90cdf4;
+  background-color: rgba(144, 205, 244, var(--bg-opacity))
+}
+
+.ingredientsBar > :nth-child(4) {
+  --bg-opacity: 1;
+  background-color: #d6bcfa;
+  background-color: rgba(214, 188, 250, var(--bg-opacity))
+}
+
 @media (min-width: 640px) {
   .sm\:container {
     width: 100%;

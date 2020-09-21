@@ -26,6 +26,10 @@ export const GET_RECIPES = gql`
         measurement
         amount
       }
+      tags {
+          tagId
+          name
+      }
     }
   }
 `;
