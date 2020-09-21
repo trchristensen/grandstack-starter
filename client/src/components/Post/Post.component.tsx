@@ -4,7 +4,7 @@ import {
   Text,
   Avatar,
   Stack,
-  Button,
+  Button, Tooltip
 } from "@chakra-ui/core";
 import moment from "moment";
 import { Link } from "react-router-dom";
@@ -16,7 +16,7 @@ import { Recipe, _RecipeIngredients } from '../../@types/schema';
 const Post: React.FC<Recipe> = ({...recipe}) => {
 
   return (
-    <Box className="recipeCard mb-4 px-4 py-4 shadow rounded-lg">
+    <Box className="recipeCard bg-white mb-4 px-4 py-4 shadow rounded-lg">
       <Box className="recipeCard__header flex flex-row items-center">
         <Avatar bg="gray.500" size="sm" name="author name" src=""></Avatar>
         <Box className="recipeCard_header-info flex flex-col px-2">
@@ -25,7 +25,7 @@ const Post: React.FC<Recipe> = ({...recipe}) => {
             <Link to="#">by {recipe.creator.name}</Link>
             <Text className="text-gray-600">
               <span className="ml-1">{" • "}</span>{" "}
-              {moment(recipe.published.formatted).fromNow()}
+              {moment(recipe.published).fromNow()}
             </Text>
           </Box>
         </Box>
@@ -35,17 +35,20 @@ const Post: React.FC<Recipe> = ({...recipe}) => {
           <Text>{recipe.description}</Text>
         </Box>
         <Box>
-          <Stack className="w-full" isInline>
+          <Stack className="w-full outline bg-gray-200" isInline>
             {
               recipe.ingredients &&
               recipe.ingredients.map((ingredient) => {
                 return (
-                  <Box className="bg-gray-100 text-gray-700 font-semibold p-1 rounded text-xs flex flex-row">
-                    {JSON.stringify(ingredient)}
-                    <span className="mr-1" role="img" aria-label="emoji">
-                      🍰
-                    </span>
-                    <Text>{ingredient.Flavor.name} - {ingredient.amount} ({ingredient.measurement}).</Text>
+                  <Box
+                  style={{width: `${ingredient.amount}%`}}
+                  className="bg-gray-100 text-gray-700 font-semibold p-1 rounded text-xs flex flex-row">
+                    <Tooltip aria-label="tooltip" label={`${ingredient.Flavor.name} - ${ingredient.amount}(
+                      ${ingredient.measurement})`} placement="bottom">
+                      <span className="mr-1" role="img" aria-label="emoji">
+                        🍰
+                      </span>
+                    </Tooltip>
                   </Box>
                 );
               })

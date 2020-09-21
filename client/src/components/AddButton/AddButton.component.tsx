@@ -19,13 +19,14 @@ import {
   NumberInputStepper,
   Radio,
   RadioGroup,
+  Textarea,
   useDisclosure,
 } from "@chakra-ui/core";
 import React from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { Flavor } from "../../@types/schema";
+import { DateTime, Flavor } from "../../@types/schema";
 import { SIMPLE_FLAVOR_QUERY } from "../../graphql/queries";
 import { CREATE_RECIPE_NODE, CREATE_RECIPE_WITH_INGREDIENTS_AND_CREATOR } from '../../graphql/mutations';
 import { CreateRandomID } from '../../helpers/functions'
@@ -53,6 +54,11 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
     {
       onCompleted: () => {
         console.log(`Recipe ${name?.toUpperCase} has been created!`);
+        setName('');
+        setDescription('');
+        setSelectedOption({});
+        onClose();
+
       },
       onError: (err) => {
         console.error(err);
@@ -65,6 +71,7 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
   const [createRecipeInfo, setCreateRecipeInfo] = React.useState();
   const [measurement, setMeasurement] = React.useState<string>('g');
   const [name, setName] = React.useState<string>();
+  const [description, setDescription] = React.useState<string>();
 
   const handleChange = (selectedOption: any) => {
     setSelectedOption({ selectedOption });
@@ -72,6 +79,7 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
 
   const handleCreateRecipe = (e:any) => {
     e.preventDefault();
+    const currentDateTime = new Date().toISOString();
     // WE NEED SOME VALIDATION RIGHT HERE.
 
     const recipeInfo = [
@@ -94,21 +102,21 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
     type recipePayload = {
       recipeId: string;
       name: string | any;
-      description: string;
+      description: string | any;
       userId: string;
+      published: string
       ingredients: [any];
     };
 
     const createRecipePayload: recipePayload = {
       recipeId: CreateRandomID(32),
       name: name,
-      description: "hardcoded description until we get an input field",
-      // published: new Date().toISOString(),
-      userId: "50c0c7f3-f819-4696-b582-86d97ba59dde",
-      ingredients: newFlavorInfo
+      description: description,
+      published: currentDateTime,
+      userId: "11ac0f1b-3545-4c05-a356-c680a779c76e",
+      ingredients: newFlavorInfo,
     };
-
-    alert(JSON.stringify(createRecipePayload))
+    
     createRecipe({ variables: createRecipePayload });
 
   }
@@ -123,8 +131,8 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
 
   return (
     <React.Fragment>
-      <Box className="AddPostBtn p-4 shadow rounded flex flex-wrap items-center justify-center mb-4">
-        <Button onClick={handleModalOpen} className="w-full flex">
+      <Box className="AddPostBtn bg-white p-4 shadow rounded flex flex-wrap items-center justify-center mb-4">
+        <Button bg={"gray.900"} color={"gray.100"} onClick={handleModalOpen} className="w-full flex">
           {children}
         </Button>
       </Box>
@@ -149,6 +157,14 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
                   placeholder="Recipe name"
                 />
               </FormControl>
+              <FormControl className="mb-3">
+                <Textarea
+                  value={description}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
+                  placeholder="Here is a sample placeholder"
+                  size="sm"
+                />
+              </FormControl>
               <FormControl className="mb-3" as="fieldset">
                 <FormLabel as="legend">Flavor Unit of Measurement</FormLabel>
                 <RadioGroup
@@ -159,6 +175,9 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
                   className="flex flex-wrap justify-normal"
                   defaultValue="%"
                 >
+                  <Radio className="px-2" value="%">
+                    %
+                  </Radio>
                   <Radio className="px-2" value="g">
                     grams
                   </Radio>
@@ -167,9 +186,6 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
                   </Radio>
                   <Radio className="px-2" value="ml">
                     mL
-                  </Radio>
-                  <Radio className="px-2" value="%">
-                    %
                   </Radio>
                 </RadioGroup>
               </FormControl>

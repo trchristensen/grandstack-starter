@@ -6,27 +6,27 @@ import * as serviceWorker from './serviceWorker';
 import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
 import { theme, ThemeProvider, CSSReset, ColorModeProvider } from "@chakra-ui/core"; 
 
-const customTheme = {
-  ...theme,
-  colors: {
-    ...theme.colors,
-    brand: {},
-    modes: {
-      dark: {
-        text: "#edeff2",
-        background: "#100C22",
-        primary: "",
-        secondary: "",
-      },
-      light: {
-        text: "#100C22",
-        background: "#edeff2",
-        primary: "",
-        secondary: "",
-      },
-    },
-  },
-};
+// const customTheme = {
+//   ...theme,
+//   colors: {
+//     ...theme.colors,
+//     brand: {},
+//     modes: {
+//       dark: {
+//         text: "#edeff2",
+//         background: "#100C22",
+//         primary: "",
+//         secondary: "",
+//       },
+//       light: {
+//         text: "#100C22",
+//         background: "#edeff2",
+//         primary: "",
+//         secondary: "",
+//       },
+//     },
+//   },
+// };
 
 const client = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL_URI || "/graphql",
@@ -34,7 +34,7 @@ const client = new ApolloClient({
 });
 
 ReactDOM.render(
-  <ThemeProvider theme={customTheme}>
+  <ThemeProvider>
     <ColorModeProvider>
       <CSSReset />
       <ApolloProvider client={client}>

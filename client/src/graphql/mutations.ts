@@ -17,7 +17,7 @@ export const CREATE_RECIPE_WITH_INGREDIENTS_AND_CREATOR = gql`
     $recipeId: ID!
     $name: String!
     $description: String!
-    #$published: DateTime,
+    $published: String!
     $userId: String!
     $ingredients: [CustomIngredientsInput]
   ) {
@@ -25,7 +25,7 @@ export const CREATE_RECIPE_WITH_INGREDIENTS_AND_CREATOR = gql`
       recipeId: $recipeId
       name: $name
       description: $description
-      # published: DateTime,
+      published: $published
       userId: $userId
       ingredients: $ingredients
     ) {
