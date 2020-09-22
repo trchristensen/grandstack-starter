@@ -1,11 +1,12 @@
 import React from "react";
 import { Box, Skeleton } from "@chakra-ui/core";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, gql, useMutation } from "@apollo/client";
 
 import Post from "../Post/Post.component";
 import AddPostButton from "../AddButton/AddButton.component";
 import RecipeFilter from '../RecipeFilter/RecipeFilter.component'
 import { Recipe } from "../../@types/schema";
+import { SIMPLE_FLAVOR_QUERY } from "../../graphql/queries";
 
 
 export const GET_RECIPES = gql`
@@ -35,10 +36,19 @@ export const GET_RECIPES = gql`
   }
 `;
 
+
 const Feed: React.FC<any> = () => {
+  
   const { loading, data, error } = useQuery(GET_RECIPES, {
-    // pollInterval: 15000,
+    pollInterval: 30000,
   });
+
+  const updateFlavorCache = () => {};
+
+    // const getFlavors, { loading, data, error }, ] = useQuery(SIMPLE_FLAVOR_QUERY, { update: updateFlavorCache });
+
+  
+  
 
   const handleEdit = (recipeId: Recipe["recipeId"]): any => {
     alert(recipeId);

@@ -162,7 +162,7 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
 
   return (
     <React.Fragment>
-      <Box className="AddPostBtn bg-white p-4 shadow rounded flex flex-wrap items-center justify-center mb-4">
+      <Box className="AddPostBtn bg-white p-4 shadow rounded-lg flex flex-wrap items-center justify-center mb-4">
         <Button
           bg={"gray.900"}
           color={"gray.100"}

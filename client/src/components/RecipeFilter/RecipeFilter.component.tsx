@@ -37,7 +37,7 @@ const RecipeFilter = () => {
   
 
   return (
-    <Box className="AddPostBtn bg-white p-4 shadow rounded flex flex-wrap items-center justify-center mb-4">
+    <Box className="AddPostBtn bg-white p-4 shadow rounded-lg flex flex-wrap items-center justify-center mb-4">
       <FormControl className="mb-3 w-full">
         <Input placeholder="Search..." />
       </FormControl>

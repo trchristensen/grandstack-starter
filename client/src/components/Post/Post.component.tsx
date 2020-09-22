@@ -6,7 +6,7 @@ import {
   Stack,
   Button,
   Tooltip,
-  Tag, useToast
+  Tag, useToast, Collapse
 } from "@chakra-ui/core";
 import moment from "moment";
 import { Link } from "react-router-dom";
@@ -15,9 +15,6 @@ import { Recipe, ITag, _RecipeIngredients } from "../../@types/schema";
 import CardMenu from "../CardMenu/CardMenu.component";
 
 const Post: React.FC<any> = (recipe, handleEdit) => {
-  
-  // const toast = useToast();
-
 
   const ingredientPercentage = recipe.ingredients.reduce(
     (total: number, currentValue: any) => {
@@ -25,6 +22,10 @@ const Post: React.FC<any> = (recipe, handleEdit) => {
     },
     0
   );
+  const [moreInfoShow, setMoreInfoShow] = React.useState(false)
+  const [commentsShow, setCommentsShow] = React.useState(false)
+  const handleToggle = () => setMoreInfoShow(!moreInfoShow);
+  const handleExpandComments = () => setCommentsShow(!commentsShow);
 
   return (
     <Box className="recipeCard bg-white mb-4 px-4 py-4 shadow rounded-lg">
@@ -49,7 +50,21 @@ const Post: React.FC<any> = (recipe, handleEdit) => {
       </Box>
       <Box className="recipeCard_content">
         <Box className="mt-2 mb-3">
-          <Text>{recipe.description}</Text>
+          <Collapse startingHeight={20} isOpen={moreInfoShow}>
+            <Text>{recipe.description}</Text>
+            <Box>Flavor details here</Box>
+          </Collapse>
+
+          <Text
+            as="span"
+            fontSize="sm"
+            onClick={handleToggle}
+            mt="2"
+            cursor="pointer"
+            color="gray.500"
+          >
+            Show {moreInfoShow ? "Less" : "More"}
+          </Text>
         </Box>
         <Box>
           <Stack
@@ -66,15 +81,14 @@ const Post: React.FC<any> = (recipe, handleEdit) => {
                   >
                     <Tooltip
                       aria-label="tooltip"
-                      label={`${ingredient.Flavor.name} - ${ingredient.amount}(
-                      ${ingredient.measurement})`}
+                      label={`${ingredient.Flavor.name} - ${ingredient.amount}
+                      ${ingredient.measurement}`}
                       placement="bottom"
                     >
                       <div
                         className="w-full text-center relative block"
-                        style={{height: '10px'}}
-                      >
-                      </div>
+                        style={{ height: "10px" }}
+                      ></div>
                     </Tooltip>
                   </Box>
                 );
@@ -91,19 +105,35 @@ const Post: React.FC<any> = (recipe, handleEdit) => {
               ))}
           </Stack>
         </Box>
-        <Box className="recipeCard__cta flex flex-row w-full border-t border-b border-gray-300 mt-2">
-          <Box className="w-1/2 text-center">
-            <Button bg="white" size="sm" py="1" className="block w-full">
-              <Box className="mr-1" as={BiLike} />
-              Like
-            </Button>
+        <Box className="recipeCard__cta w-full border-t border-b border-gray-300 mt-2">
+          <Box className="flex flex-row">
+            <Box className="w-1/2 text-center">
+              <Button bg="white" size="sm" py="1" className="block w-full">
+                <Box className="mr-1" as={BiLike} />
+                Like
+              </Button>
+            </Box>
+            <Box className="w-1/2 text-center">
+              <Button
+                onClick={handleExpandComments}
+                bg="white"
+                size="sm"
+                py="1"
+                className="block w-full"
+              >
+                <Box className="mr-1" as={BiComment} />
+                Comment
+              </Button>
+            </Box>
           </Box>
-          <Box className="w-1/2 text-center">
-            <Button bg="white" size="sm" py="1" className="block w-full">
-              <Box className="mr-1" as={BiComment} />
-              Comment
-            </Button>
-          </Box>
+          <Collapse mt="0" pt="4" pb="4"
+            className="border-t border-gray-300"
+            isOpen={commentsShow}
+          >
+            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus
+            terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer
+            labore wes anderson cred nesciunt sapiente ea proident.
+          </Collapse>
         </Box>
       </Box>
     </Box>
