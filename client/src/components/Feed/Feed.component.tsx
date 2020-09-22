@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "@chakra-ui/core";
+import { Box, Skeleton } from "@chakra-ui/core";
 import { useQuery, gql } from "@apollo/client";
 
 import Post from "../Post/Post.component";
@@ -45,20 +45,34 @@ const Feed: React.FC<any> = () => {
   };
 
   return (
-    <Box className="container max-w-lg mx-auto rounded-lg mt-6 p-6">
-      <AddPostButton>Create Recipe</AddPostButton>
-      <RecipeFilter />
+    <Box className="container mx-auto max-w-xl">
       <Box>
-        {loading && !error && <p>Loading...</p>}
-        {error && !loading && <p>Error: {JSON.stringify(error)}</p>}
-        {data &&
-          !loading &&
-          !error &&
-          data.recipesNotArchived.map((recipe: Recipe) => {
-            return (
-              <Post key={recipe.recipeId} handleEdit={handleEdit} {...recipe} />
-            );
-          })}
+        <AddPostButton>Create Recipe</AddPostButton>
+        <RecipeFilter />
+        <Box>
+          {loading && !error && (
+            <Box>
+              <Skeleton rounded="lg" height="185px" width="100%" mb="4" />
+              <Skeleton rounded="lg" height="185px" width="100%" mb="4" />
+              <Skeleton rounded="lg" height="185px" width="100%" mb="4" />
+              <Skeleton rounded="lg" height="185px" width="100%" mb="4" />
+              <Skeleton rounded="lg" height="185px" width="100%" mb="4" />
+            </Box>
+          )}
+          {error && !loading && <p>Error: {JSON.stringify(error)}</p>}
+          {data &&
+            !loading &&
+            !error &&
+            data.recipesNotArchived.map((recipe: Recipe) => {
+              return (
+                <Post
+                  key={recipe.recipeId}
+                  handleEdit={handleEdit}
+                  {...recipe}
+                />
+              );
+            })}
+        </Box>
       </Box>
     </Box>
   );

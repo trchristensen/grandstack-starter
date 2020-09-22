@@ -6,7 +6,7 @@ import {
   Stack,
   Button,
   Tooltip,
-  Tag,
+  Tag, useToast
 } from "@chakra-ui/core";
 import moment from "moment";
 import { Link } from "react-router-dom";
@@ -16,6 +16,8 @@ import CardMenu from "../CardMenu/CardMenu.component";
 
 const Post: React.FC<any> = (recipe, handleEdit) => {
   
+  // const toast = useToast();
+
 
   const ingredientPercentage = recipe.ingredients.reduce(
     (total: number, currentValue: any) => {

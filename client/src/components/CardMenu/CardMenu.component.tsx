@@ -22,16 +22,16 @@ const CardMenu: React.FC<any> = ({recipe}, handleEdit) => {
 
   return (
     <Menu>
-      <MenuButton borderRadius={"full"} size={"sm"} p={"0"} as={Button}>
-        <Box as={BsThreeDotsVertical} />
+      <MenuButton borderRadius={"full"} size={"sm"} p={"0"} as={Button} bg={'white'}>
+        <Box className="text-gray-500" as={BsThreeDotsVertical} />
       </MenuButton>
       <MenuList>
-        <MenuGroup title="Options">
+        
           <MenuItem onClick={() => handleEdit(recipe.recipeId)}>
             Edit Recipe
           </MenuItem>
           <MenuItem onClick={() => handleDelete(recipe.recipeId)}>Delete Recipe</MenuItem>
-        </MenuGroup>
+
         <MenuDivider />
         <MenuGroup title="Help">
           <MenuItem>Flag</MenuItem>

@@ -21,6 +21,7 @@ import {
   RadioGroup,
   Textarea,
   useDisclosure,
+  useToast
 } from "@chakra-ui/core";
 import React from "react";
 import Select from "react-select";
@@ -35,10 +36,11 @@ interface AddButtonProps {
   children?: React.ReactNode;
 }
 
-const animatedComponents = makeAnimated();
 
 const AddButton: React.FC<AddButtonProps> = ({ children }) => {
+  const animatedComponents = makeAnimated();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
   const handleModalOpen = () => {
     onOpen();
@@ -53,30 +55,39 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
   const [createRecipe] = useMutation(
     CREATE_RECIPE_WITH_INGREDIENTS_AND_CREATOR,
     {
-      update(cache, { data }) {
-        const newRecipeFromResponse = data?.createRecipeWithIngredients;
-        console.log("newRecipeFromResponse_: ", newRecipeFromResponse);
+      // update(cache, { data }) {
+      //   const newRecipeFromResponse = data?.createRecipeWithIngredients;
+      //   console.log("newRecipeFromResponse_: ", newRecipeFromResponse);
 
-        const existingRecipes: any = cache.readQuery({
-          query: GET_RECIPES,
-        });
+      //   const existingRecipes: any = cache.readQuery({
+      //     query: GET_RECIPES,
+      //   });
 
-        cache.writeQuery({
-          query: GET_RECIPES,
-          data: {
-            recipes: existingRecipes?.recipesNotArchived.concat(
-              newRecipeFromResponse
-            ),
-          },
-        });
+      //   cache.writeQuery({
+      //     query: GET_RECIPES,
+      //     data: {
+      //       recipes: existingRecipes?.recipesNotArchived.concat(
+      //         newRecipeFromResponse
+      //       ),
+      //     },
+      //   });
+      // },
 
-      },
-      onCompleted: () => {
+      refetchQueries: [{query: GET_RECIPES}],
+      onCompleted: (res) => {
         console.log(`Recipe ${name?.toUpperCase} has been created!`);
         setName("");
         setDescription("");
         setSelectedOption({});
         onClose();
+         toast({
+           title: "Recipe created!",
+           description: "Your recipe has been created.",
+           status: "success",
+           position: "bottom-right",
+           duration: 5000,
+           isClosable: true,
+         });
       },
       onError: (err) => {
         console.error(err);
