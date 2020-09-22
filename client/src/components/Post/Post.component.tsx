@@ -50,7 +50,7 @@ const Post: React.FC<any> = (recipe, handleEdit) => {
       </Box>
       <Box className="recipeCard_content">
         <Box className="mt-2 mb-3">
-          <Collapse startingHeight={20} isOpen={moreInfoShow}>
+          <Collapse startingHeight={24} isOpen={moreInfoShow}>
             <Text>{recipe.description}</Text>
             <Box>Flavor details here</Box>
           </Collapse>
