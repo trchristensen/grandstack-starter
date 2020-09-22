@@ -32,96 +32,26 @@ export const CREATE_RECIPE_WITH_INGREDIENTS_AND_CREATOR = gql`
       isArchived: $isArchived
     ) {
       recipeId
-    }
-  }
-`;
-
-export const CREATE_RECIPE_NODE = gql`
-  mutation(
-    $name: String!
-    $description: String!
-    $published: _Neo4jDateTimeInput
-    $lastEdited: _Neo4jDateTimeInput
-  ) {
-    CreateRecipe(
-      name: $name
-      description: $description
-      published: $published
-      lastEdited: $lastEdited
-    ) {
-      recipeId
       name
       description
-      published {
-        formatted
-      }
-      lastEdited {
-        formatted
-      }
+      published
       creator {
         userId
         name
       }
-    }
-  }
-`;
-
-export const ADD_RECIPE_PARENT_RELATIONSHIP = gql`
-  mutation($recipe: _RecipeInput, $parentRecipe: _RecipeInput) {
-    AddRecipeParent(
-      from: { recipeId: $recipe }
-      to: { recipeId: $parentRecipe }
-    ) {
-      from {
-        name
-        recipeId
-      }
-      to {
-        name
-        recipeId
-      }
-    }
-  }
-`;
-
-export const ADD_RECIPE_CREATOR_RELATIONSHIP = gql`
-  mutation($recipeId: ID!, $creatorId: ID!) {
-    AddRecipeCreator(
-      from: { recipeId: $recipeId }
-      to: { userId: $creatorId }
-    ) {
-      from {
+      parent {
         recipeId
         name
       }
-      to {
-        userId
-        name
+      ingredients {
+        amount
+        measurement
+        Flavor {
+          flavorId
+          name
+        }
       }
-    }
-  }
-`;
-
-export const ADD_RECIPE_INGREDIENT_RELATIONSHIP = gql`
-  mutation(
-    $flavor: _FlavorInput!
-    $recipe: _RecipeInput!
-    $amount: Int
-    $measurement: String
-  ) {
-    AddRecipeIngredients(
-      from: $flavor
-      to: $recipe
-      data: { amount: $amount, measurement: $measurement }
-    ) {
-      from {
-        flavorId
-        name
-      }
-      to {
-        recipeId
-        name
-      }
+      isArchived
     }
   }
 `;

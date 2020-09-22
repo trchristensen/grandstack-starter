@@ -28,8 +28,9 @@ import makeAnimated from "react-select/animated";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { DateTime, Flavor } from "../../@types/schema";
 import { SIMPLE_FLAVOR_QUERY } from "../../graphql/queries";
-import { CREATE_RECIPE_NODE, CREATE_RECIPE_WITH_INGREDIENTS_AND_CREATOR } from '../../graphql/mutations';
-import { CreateRandomID } from '../../helpers/functions'
+import { CREATE_RECIPE_WITH_INGREDIENTS_AND_CREATOR } from "../../graphql/mutations";
+import { GET_RECIPES } from "../Feed/Feed.component";
+import { CreateRandomID } from "../../helpers/functions";
 interface AddButtonProps {
   children?: React.ReactNode;
 }
@@ -52,13 +53,30 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
   const [createRecipe] = useMutation(
     CREATE_RECIPE_WITH_INGREDIENTS_AND_CREATOR,
     {
+      update(cache, { data }) {
+        const newRecipeFromResponse = data?.createRecipeWithIngredients;
+        console.log("newRecipeFromResponse_: ", newRecipeFromResponse);
+
+        const existingRecipes: any = cache.readQuery({
+          query: GET_RECIPES,
+        });
+
+        cache.writeQuery({
+          query: GET_RECIPES,
+          data: {
+            recipes: existingRecipes?.recipesNotArchived.concat(
+              newRecipeFromResponse
+            ),
+          },
+        });
+
+      },
       onCompleted: () => {
         console.log(`Recipe ${name?.toUpperCase} has been created!`);
-        setName('');
-        setDescription('');
+        setName("");
+        setDescription("");
         setSelectedOption({});
         onClose();
-
       },
       onError: (err) => {
         console.error(err);
@@ -69,7 +87,7 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
   const [flavorsList, setFlavorsList] = React.useState<Flavor[]>();
   const [selectedOption, setSelectedOption] = React.useState<any>();
   const [createRecipeInfo, setCreateRecipeInfo] = React.useState();
-  const [measurement, setMeasurement] = React.useState<string>('g');
+  const [measurement, setMeasurement] = React.useState<string>("g");
   const [name, setName] = React.useState<string>();
   const [description, setDescription] = React.useState<string>();
 
@@ -77,25 +95,26 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
     setSelectedOption({ selectedOption });
   };
 
-  const handleCreateRecipe = (e:any) => {
+  const handleCreateRecipe = (e: any) => {
     e.preventDefault();
     const currentDateTime = new Date().toISOString();
     // WE NEED SOME VALIDATION RIGHT HERE.
 
-    const recipeInfo = [
-      ...selectedOption.selectedOption
-    ];
+    const recipeInfo = [...selectedOption.selectedOption];
 
-
-    const newFlavorInfo:any = recipeInfo.map(flavor => {
+    const newFlavorInfo: any = recipeInfo.map((flavor) => {
       const qty = (document.getElementById(
         `${flavor.value}`
       ) as HTMLInputElement).value;
 
-      let rObj: {amount?: number, measurement?: string, flavorId?: string} = {}
-      rObj['amount'] = parseInt(qty)
-      rObj['measurement'] = measurement;
-      rObj['flavorId'] = flavor.value;
+      let rObj: {
+        amount?: number;
+        measurement?: string;
+        flavorId?: string;
+      } = {};
+      rObj["amount"] = parseInt(qty);
+      rObj["measurement"] = measurement;
+      rObj["flavorId"] = flavor.value;
       return rObj;
     });
 
@@ -104,9 +123,9 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
       name: string | any;
       description: string | any;
       userId: string;
-      published: string
+      published: string;
       ingredients: [any];
-      isArchived: boolean
+      isArchived: boolean;
     };
 
     const createRecipePayload: recipePayload = {
@@ -114,14 +133,13 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
       name: name,
       description: description,
       published: currentDateTime,
-      userId: "11ac0f1b-3545-4c05-a356-c680a779c76e",
+      userId: "84eb9ea8-d0ed-4d76-a121-2b4855c738dd",
       ingredients: newFlavorInfo,
-      isArchived: false
+      isArchived: false,
     };
-    
-    createRecipe({ variables: createRecipePayload });
 
-  }
+    createRecipe({ variables: createRecipePayload });
+  };
 
   React.useEffect(() => {
     var result = data?.Flavor.map((flavor: Flavor) => ({
@@ -134,7 +152,12 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
   return (
     <React.Fragment>
       <Box className="AddPostBtn bg-white p-4 shadow rounded flex flex-wrap items-center justify-center mb-4">
-        <Button bg={"gray.900"} color={"gray.100"} onClick={handleModalOpen} className="w-full flex">
+        <Button
+          bg={"gray.900"}
+          color={"gray.100"}
+          onClick={handleModalOpen}
+          className="w-full flex"
+        >
           {children}
         </Button>
       </Box>
@@ -162,7 +185,9 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
               <FormControl className="mb-3">
                 <Textarea
                   value={description}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setDescription(e.target.value)
+                  }
                   placeholder="Here is a sample placeholder"
                   size="sm"
                 />

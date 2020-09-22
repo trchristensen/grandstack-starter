@@ -5,7 +5,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs'
 import { Recipe } from '../../@types/schema';
 import { ARCHIVE_RECIPE } from '../../graphql/mutations';
 
-const CardMenu: React.FC<any> = ({recipe}) => {
+const CardMenu: React.FC<any> = ({recipe}, handleEdit) => {
 
   const [archive] = useMutation(ARCHIVE_RECIPE, {
     onCompleted: (res) => console.log('Recipe has been archived!', res),
@@ -27,7 +27,7 @@ const CardMenu: React.FC<any> = ({recipe}) => {
       </MenuButton>
       <MenuList>
         <MenuGroup title="Options">
-          <MenuItem onClick={() => alert("not sure how to handle this yet")}>
+          <MenuItem onClick={() => handleEdit(recipe.recipeId)}>
             Edit Recipe
           </MenuItem>
           <MenuItem onClick={() => handleDelete(recipe.recipeId)}>Delete Recipe</MenuItem>

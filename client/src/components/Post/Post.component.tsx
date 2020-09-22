@@ -14,7 +14,15 @@ import { BiComment, BiLike } from "react-icons/bi";
 import { Recipe, ITag, _RecipeIngredients } from "../../@types/schema";
 import CardMenu from "../CardMenu/CardMenu.component";
 
-const Post: React.FC<Recipe> = (recipe) => {
+const Post: React.FC<any> = (recipe, handleEdit) => {
+  
+
+  const ingredientPercentage = recipe.ingredients.reduce(
+    (total: number, currentValue: any) => {
+      return total + parseInt(currentValue.amount);
+    },
+    0
+  );
 
   return (
     <Box className="recipeCard bg-white mb-4 px-4 py-4 shadow rounded-lg">
@@ -29,12 +37,13 @@ const Post: React.FC<Recipe> = (recipe) => {
               <Link to="#">by {recipe.creator.name}</Link>
               <Text className="text-gray-600">
                 <span className="ml-1">{" • "}</span>{" "}
-                {moment(recipe.published).fromNow()} { recipe.isArchived &&  ` - Archived` }
+                {moment(recipe.published).fromNow()}{" "}
+                {recipe.isArchived && ` - Archived`}
               </Text>
             </Box>
           </Box>
         </Box>
-        <CardMenu recipe={recipe} />
+        <CardMenu recipe={recipe} handleEdit={handleEdit} />
       </Box>
       <Box className="recipeCard_content">
         <Box className="mt-2 mb-3">
@@ -47,11 +56,11 @@ const Post: React.FC<Recipe> = (recipe) => {
             isInline
           >
             {recipe.ingredients &&
-              recipe.ingredients.map((ingredient) => {
+              recipe.ingredients.map((ingredient: any) => {
                 return (
                   <Box
                     style={{ width: `${ingredient.amount}%` }}
-                    className="ingredientsBar__ingredient bg-gray-500 text-gray-700 font-semibold text-xs flex justify-center items-center flex-row"
+                    className="ingredientsBar__ingredient text-gray-700 font-semibold text-xs flex justify-center items-center flex-row border-r border-gray-200"
                   >
                     <Tooltip
                       aria-label="tooltip"
@@ -59,13 +68,11 @@ const Post: React.FC<Recipe> = (recipe) => {
                       ${ingredient.measurement})`}
                       placement="bottom"
                     >
-                      <span
+                      <div
                         className="w-full text-center relative block"
-                        role="img"
-                        aria-label="emoji"
+                        style={{height: '10px'}}
                       >
-                        🍰
-                      </span>
+                      </div>
                     </Tooltip>
                   </Box>
                 );
@@ -75,7 +82,7 @@ const Post: React.FC<Recipe> = (recipe) => {
         <Box className="recipeCard__tags flex w-full">
           <Stack className="w-full mt-3" isInline>
             {recipe.tags &&
-              recipe.tags.map((tag) => (
+              recipe.tags.map((tag: any) => (
                 <Tag style={{ fontSize: "12px" }} size={"sm"}>
                   {tag.name}
                 </Tag>

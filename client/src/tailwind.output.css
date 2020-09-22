@@ -22385,9 +22385,9 @@ body {
   background-color: #edf2f7;
   background-color: rgba(237, 242, 247, var(--bg-opacity));
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -22400,34 +22400,32 @@ code {
 /* recipe post */
 
 .ingredientsBar > :nth-child(1) {
-  --bg-opacity: 1;
-  background-color: #feb2b2;
-  background-color: rgba(254, 178, 178, var(--bg-opacity))
+  background: #8bcf69
 }
 
 .ingredientsBar > :nth-child(2) {
-  --bg-opacity: 1;
-  background-color: #faf089;
-  background-color: rgba(250, 240, 137, var(--bg-opacity))
+  background: #e6d450
 }
 
 .ingredientsBar > :nth-child(3) {
-  --bg-opacity: 1;
-  background-color: #9ae6b4;
-  background-color: rgba(154, 230, 180, var(--bg-opacity))
+  background: #e6d450;
 }
 
 .ingredientsBar > :nth-child(4) {
-  --bg-opacity: 1;
-  background-color: #90cdf4;
-  background-color: rgba(144, 205, 244, var(--bg-opacity))
+  background: #f28f68;
 }
 
-.ingredientsBar > :nth-child(4) {
-  --bg-opacity: 1;
-  background-color: #d6bcfa;
-  background-color: rgba(214, 188, 250, var(--bg-opacity))
+.ingredientsBar > :nth-child(5) {
+  background: #cf82bf;
 }
+
+.ingredientsBar > :nth-child(6) {
+  background: #719fd1;
+}
+
+/* .ingredientsBar > :nth-child(7) {
+  @apply bg-red-900
+} */
 
 @media (min-width: 640px) {
   .sm\:container {

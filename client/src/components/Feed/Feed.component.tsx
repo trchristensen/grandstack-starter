@@ -7,6 +7,7 @@ import AddPostButton from "../AddButton/AddButton.component";
 import RecipeFilter from '../RecipeFilter/RecipeFilter.component'
 import { Recipe } from "../../@types/schema";
 
+
 export const GET_RECIPES = gql`
   query {
     recipesNotArchived(orderBy: published_desc) {
@@ -34,8 +35,14 @@ export const GET_RECIPES = gql`
   }
 `;
 
-const Feed: React.FC = () => {
-  const { loading, data, error } = useQuery(GET_RECIPES);
+const Feed: React.FC<any> = () => {
+  const { loading, data, error } = useQuery(GET_RECIPES, {
+    // pollInterval: 15000,
+  });
+
+  const handleEdit = (recipeId: Recipe["recipeId"]): any => {
+    alert(recipeId);
+  };
 
   return (
     <Box className="container max-w-lg mx-auto rounded-lg mt-6 p-6">
@@ -48,7 +55,9 @@ const Feed: React.FC = () => {
           !loading &&
           !error &&
           data.recipesNotArchived.map((recipe: Recipe) => {
-            return <Post key={recipe.recipeId} {...recipe} />;
+            return (
+              <Post key={recipe.recipeId} handleEdit={handleEdit} {...recipe} />
+            );
           })}
       </Box>
     </Box>
