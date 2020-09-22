@@ -14,7 +14,8 @@ import { BiComment, BiLike } from "react-icons/bi";
 import { Recipe, ITag, _RecipeIngredients } from "../../@types/schema";
 import CardMenu from "../CardMenu/CardMenu.component";
 
-const Post: React.FC<Recipe> = ({ ...recipe }) => {
+const Post: React.FC<Recipe> = (recipe) => {
+
   return (
     <Box className="recipeCard bg-white mb-4 px-4 py-4 shadow rounded-lg">
       <Box className="recipeCard__header flex flex-row items-start justify-between">
@@ -28,12 +29,12 @@ const Post: React.FC<Recipe> = ({ ...recipe }) => {
               <Link to="#">by {recipe.creator.name}</Link>
               <Text className="text-gray-600">
                 <span className="ml-1">{" • "}</span>{" "}
-                {moment(recipe.published).fromNow()}
+                {moment(recipe.published).fromNow()} { recipe.isArchived &&  ` - Archived` }
               </Text>
             </Box>
           </Box>
         </Box>
-        <CardMenu />
+        <CardMenu recipe={recipe} />
       </Box>
       <Box className="recipeCard_content">
         <Box className="mt-2 mb-3">

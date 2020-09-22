@@ -106,6 +106,7 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
       userId: string;
       published: string
       ingredients: [any];
+      isArchived: boolean
     };
 
     const createRecipePayload: recipePayload = {
@@ -115,6 +116,7 @@ const AddButton: React.FC<AddButtonProps> = ({ children }) => {
       published: currentDateTime,
       userId: "11ac0f1b-3545-4c05-a356-c680a779c76e",
       ingredients: newFlavorInfo,
+      isArchived: false
     };
     
     createRecipe({ variables: createRecipePayload });

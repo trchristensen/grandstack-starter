@@ -9,11 +9,11 @@ import { Recipe } from "../../@types/schema";
 
 export const GET_RECIPES = gql`
   query {
-    Recipe(orderBy: published_desc) {
+    recipesNotArchived(orderBy: published_desc) {
       recipeId
       name
       description
-      published 
+      published
       creator {
         userId
         name
@@ -27,8 +27,8 @@ export const GET_RECIPES = gql`
         amount
       }
       tags {
-          tagId
-          name
+        tagId
+        name
       }
     }
   }
@@ -47,7 +47,7 @@ const Feed: React.FC = () => {
         {data &&
           !loading &&
           !error &&
-          data.Recipe.map((recipe: Recipe) => {
+          data.recipesNotArchived.map((recipe: Recipe) => {
             return <Post key={recipe.recipeId} {...recipe} />;
           })}
       </Box>

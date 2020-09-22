@@ -8,6 +8,7 @@ export interface Recipe {
   parent?: Recipe;
   ingredients?: _RecipeIngredients[];
   tags?: ITag[];
+  isArchived: Boolean
 }
 
 export interface _RecipeIngredients {

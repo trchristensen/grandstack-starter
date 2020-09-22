@@ -20,6 +20,7 @@ export const CREATE_RECIPE_WITH_INGREDIENTS_AND_CREATOR = gql`
     $published: String!
     $userId: String!
     $ingredients: [CustomIngredientsInput]
+    $isArchived: Boolean
   ) {
     createRecipeWithIngredients(
       recipeId: $recipeId
@@ -28,6 +29,7 @@ export const CREATE_RECIPE_WITH_INGREDIENTS_AND_CREATOR = gql`
       published: $published
       userId: $userId
       ingredients: $ingredients
+      isArchived: $isArchived
     ) {
       recipeId
     }
@@ -200,6 +202,14 @@ export const CREATE_FLAVOR_TAG_RELATIONSHIP = gql`
         tagId
         name
       }
+    }
+  }
+`;
+
+export const ARCHIVE_RECIPE = gql`
+  mutation($recipeId: ID!) {
+    archiveRecipe(recipeId: $recipeId) {
+      recipeId
     }
   }
 `;
