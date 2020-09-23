@@ -9,6 +9,8 @@ export interface Recipe {
   ingredients?: _RecipeIngredients[];
   tags?: ITag[];
   isArchived: Boolean
+  comments: Comment[]
+  likes: any[]
 }
 
 export interface _RecipeIngredients {
@@ -19,6 +21,14 @@ export interface _RecipeIngredients {
     name?: string;
     company?: string;
   }
+}
+
+export interface Comment {
+  commentId: string;
+  text: string;
+  author: User;
+  recipe: Recipe;
+  published: string;
 }
 
 export interface ITag {

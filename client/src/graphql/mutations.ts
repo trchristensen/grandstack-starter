@@ -143,3 +143,24 @@ export const ARCHIVE_RECIPE = gql`
     }
   }
 `;
+
+export const CREATE_RECIPE_COMMENT = gql`
+  mutation(
+    $commentId: String!
+    $recipeId: String!
+    $userId: String!
+    $published: String!
+    $text: String!
+  ) {
+    createCommentForRecipe(
+      commentId: $commentId
+      recipeId: $recipeId
+      userId: $userId
+      published: $published
+      text: $text
+    ) {
+      commentId
+      text
+    }
+  }
+`;

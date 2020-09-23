@@ -4,10 +4,9 @@ import { useQuery, gql, useMutation } from "@apollo/client";
 
 import Post from "../Post/Post.component";
 import AddPostButton from "../AddButton/AddButton.component";
-import RecipeFilter from '../RecipeFilter/RecipeFilter.component'
+import RecipeFilter from "../RecipeFilter/RecipeFilter.component";
 import { Recipe } from "../../@types/schema";
 import { SIMPLE_FLAVOR_QUERY } from "../../graphql/queries";
-
 
 export const GET_RECIPES = gql`
   query {
@@ -32,23 +31,27 @@ export const GET_RECIPES = gql`
         tagId
         name
       }
+      comments {
+        commentId
+        text
+        published
+        author {
+          userId
+          name
+        }
+      }
     }
   }
 `;
 
-
 const Feed: React.FC<any> = () => {
-  
   const { loading, data, error } = useQuery(GET_RECIPES, {
-    pollInterval: 30000,
+    // pollInterval: 30000,
   });
 
   const updateFlavorCache = () => {};
 
-    // const getFlavors, { loading, data, error }, ] = useQuery(SIMPLE_FLAVOR_QUERY, { update: updateFlavorCache });
-
-  
-  
+  // const getFlavors, { loadingFlavors: loading, flavorData: data, flavorError: error }, ] = useQuery(SIMPLE_FLAVOR_QUERY, { update: updateFlavorCache });
 
   const handleEdit = (recipeId: Recipe["recipeId"]): any => {
     alert(recipeId);

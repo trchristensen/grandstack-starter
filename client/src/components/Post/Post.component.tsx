@@ -6,24 +6,26 @@ import {
   Stack,
   Button,
   Tooltip,
-  Tag, useToast, Collapse
+  Tag,
+  useToast,
+  Collapse,
 } from "@chakra-ui/core";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import { BiComment, BiLike } from "react-icons/bi";
-import { Recipe, ITag, _RecipeIngredients } from "../../@types/schema";
+import { Recipe, ITag, _RecipeIngredients, Comment } from "../../@types/schema";
 import CardMenu from "../CardMenu/CardMenu.component";
+import CommentBox from "../CommentBox/CommentBox.component";
 
-const Post: React.FC<any> = (recipe, handleEdit) => {
-
-  const ingredientPercentage = recipe.ingredients.reduce(
+const Post: React.FC<any> = (recipe: Recipe, handleEdit) => {
+  const ingredientPercentage = recipe.ingredients?.reduce(
     (total: number, currentValue: any) => {
       return total + parseInt(currentValue.amount);
     },
     0
   );
-  const [moreInfoShow, setMoreInfoShow] = React.useState(false)
-  const [commentsShow, setCommentsShow] = React.useState(false)
+  const [moreInfoShow, setMoreInfoShow] = React.useState(false);
+  const [commentsShow, setCommentsShow] = React.useState(false);
   const handleToggle = () => setMoreInfoShow(!moreInfoShow);
   const handleExpandComments = () => setCommentsShow(!commentsShow);
 
@@ -37,7 +39,9 @@ const Post: React.FC<any> = (recipe, handleEdit) => {
               {recipe.name}
             </Text>
             <Box className="recipeCard_header-info-details flex flex-wrap flex-row align-end text-sm">
-              <Link to="#">by {recipe.creator.name}</Link>
+              {
+               recipe.creator.name
+              }
               <Text className="text-gray-600">
                 <span className="ml-1">{" • "}</span>{" "}
                 {moment(recipe.published).fromNow()}{" "}
@@ -56,6 +60,7 @@ const Post: React.FC<any> = (recipe, handleEdit) => {
           </Collapse>
 
           <Text
+            className="text-right block"
             as="span"
             fontSize="sm"
             onClick={handleToggle}
@@ -105,7 +110,15 @@ const Post: React.FC<any> = (recipe, handleEdit) => {
               ))}
           </Stack>
         </Box>
-        <Box className="recipeCard__cta w-full border-t border-b border-gray-300 mt-2">
+        <Box className="recipeCard__cta-count w-full flex justify-between mt-2 text-sm text-gray-600 px-1">
+          <Box>2 likes</Box>
+          {recipe.comments && recipe.comments.length > 0 ? (
+            <Box className="cursor-pointer" onClick={handleExpandComments}>
+              {recipe.comments.length + " comments"}
+            </Box>
+          ) : null}
+        </Box>
+        <Box className="recipeCard__cta w-full border-t border-b border-gray-300">
           <Box className="flex flex-row">
             <Box className="w-1/2 text-center">
               <Button bg="white" size="sm" py="1" className="block w-full">
@@ -126,13 +139,36 @@ const Post: React.FC<any> = (recipe, handleEdit) => {
               </Button>
             </Box>
           </Box>
-          <Collapse mt="0" pt="4" pb="4"
+          <Collapse
+            mt="0"
+            pt="4"
+            pb="4"
             className="border-t border-gray-300"
             isOpen={commentsShow}
           >
-            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus
-            terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer
-            labore wes anderson cred nesciunt sapiente ea proident.
+            <CommentBox recipe={recipe} />
+            {recipe.comments &&
+              recipe.comments.map((comment) => (
+                <Box
+                  className="p-2 rounded-lg flex items-start w-full"
+                  key={comment.commentId}
+                >
+                  <Box>
+                    <Avatar size="sm" />
+                  </Box>
+                  <Box className="pl-1 w-full">
+                    <Box className="flex flex-col rounded-lg bg-gray-200 p-1 pl-2 pr-2 text-sm w-full">
+                      <Text className="font-semibold leading-tight">
+                        {comment.author.name}
+                      </Text>
+                      <Text className="leading-tight">{comment.text}</Text>
+                    </Box>
+                    <Text className="text-xs ml-1">
+                      {moment(comment.published).fromNow()}
+                    </Text>
+                  </Box>
+                </Box>
+              ))}
           </Collapse>
         </Box>
       </Box>
