@@ -6,7 +6,7 @@ import { useQuery, gql } from "@apollo/client";
 
 export const GET_RECIPE = gql`
   query($recipeId: ID) {
-    Recipe(recipeId: $recipeId, orderBy: published_desc) {
+    Recipe(recipeId: $recipeId) {
       recipeId
       name
       description

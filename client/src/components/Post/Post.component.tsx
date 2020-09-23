@@ -16,6 +16,8 @@ import { BiComment, BiLike } from "react-icons/bi";
 import { Recipe, ITag, _RecipeIngredients, Comment } from "../../@types/schema";
 import CardMenu from "../CardMenu/CardMenu.component";
 import CommentBox from "../CommentBox/CommentBox.component";
+import { useQuery } from "@apollo/client";
+import { GET_RECIPE_COMMENTS_AND_REPLIES } from "../../graphql/queries";
 
 const Post: React.FC<any> = (recipe: Recipe, handleEdit) => {
   const ingredientPercentage = recipe.ingredients?.reduce(
@@ -26,8 +28,20 @@ const Post: React.FC<any> = (recipe: Recipe, handleEdit) => {
   );
   const [moreInfoShow, setMoreInfoShow] = React.useState(false);
   const [commentsShow, setCommentsShow] = React.useState(false);
+  const commentQuery = useQuery(GET_RECIPE_COMMENTS_AND_REPLIES, {
+    variables: {
+      recipeId: recipe.recipeId,
+    },
+  });
   const handleToggle = () => setMoreInfoShow(!moreInfoShow);
-  const handleExpandComments = () => setCommentsShow(!commentsShow);
+  const handleExpandComments = () => {
+    // new query to load comments for single recipe. then add to cache object (local state)
+    console.log(commentQuery.data.Recipe[0].comments)
+
+    // open comments box
+    setCommentsShow(!commentsShow);
+  }
+  
 
   return (
     <Box className="recipeCard bg-white mb-4 px-4 py-4 shadow rounded-lg">
@@ -39,9 +53,7 @@ const Post: React.FC<any> = (recipe: Recipe, handleEdit) => {
               {recipe.name}
             </Text>
             <Box className="recipeCard_header-info-details flex flex-wrap flex-row align-end text-sm">
-              {
-               recipe.creator.name
-              }
+              {recipe.creator.name}
               <Text className="text-gray-600">
                 <span className="ml-1">{" • "}</span>{" "}
                 {moment(recipe.published).fromNow()}{" "}
@@ -111,7 +123,7 @@ const Post: React.FC<any> = (recipe: Recipe, handleEdit) => {
           </Stack>
         </Box>
         <Box className="recipeCard__cta-count w-full flex justify-between mt-2 text-sm text-gray-600 px-1">
-          <Box>2 likes</Box>
+          <Box># likes</Box>
           {recipe.comments && recipe.comments.length > 0 ? (
             <Box className="cursor-pointer" onClick={handleExpandComments}>
               {recipe.comments.length + " comments"}
@@ -147,8 +159,9 @@ const Post: React.FC<any> = (recipe: Recipe, handleEdit) => {
             isOpen={commentsShow}
           >
             <CommentBox recipe={recipe} />
-            {recipe.comments &&
-              recipe.comments.map((comment) => (
+            {commentQuery.data &&
+              !commentQuery.error &&
+              commentQuery.data.Recipe[0].comments.map((comment:Comment) => (
                 <Box
                   className="p-2 rounded-lg flex items-start w-full"
                   key={comment.commentId}
@@ -169,6 +182,7 @@ const Post: React.FC<any> = (recipe: Recipe, handleEdit) => {
                   </Box>
                 </Box>
               ))}
+           
           </Collapse>
         </Box>
       </Box>

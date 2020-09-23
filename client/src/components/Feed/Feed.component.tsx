@@ -31,15 +31,15 @@ export const GET_RECIPES = gql`
         tagId
         name
       }
-      comments {
-        commentId
-        text
-        published
-        author {
-          userId
-          name
-        }
-      }
+      # comments {
+      #   commentId
+      #   text
+      #   published
+      #   author {
+      #     userId
+      #     name
+      #   }
+      # }
     }
   }
 `;

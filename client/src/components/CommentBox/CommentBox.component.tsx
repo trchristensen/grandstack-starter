@@ -2,6 +2,7 @@ import { useMutation } from "@apollo/client";
 import { Box, Button, FormControl, Input } from "@chakra-ui/core";
 import React, { FormEvent, FormEventHandler } from "react";
 import { CREATE_RECIPE_COMMENT } from "../../graphql/mutations"
+import { GET_RECIPE, GET_RECIPE_COMMENTS_AND_REPLIES } from "../../graphql/queries"
 import { CreateRandomID } from '../../helpers/functions'
 // import { Recipe } from "../../@types/schema";
 
@@ -12,14 +13,21 @@ const CommentBox: React.FC<any> = ({recipe}) => {
   const [comment, setComment] = React.useState('');
 
   const [createComment] = useMutation(CREATE_RECIPE_COMMENT, {
+    refetchQueries: [{ query: GET_RECIPE_COMMENTS_AND_REPLIES,
+      variables: {
+        recipeId: recipe.recipeId
+      }
+    }],
     onCompleted: () => {
       setComment("");
+      // need to update
     },
     onError: (error) => {
       console.log(error);
     },
     // refetchQueries: [{query: GET_RECIPE_COMMENTS}]
   });
+  
 
   const handleCommentSubmit = (e: any) => {
     e.preventDefault();
