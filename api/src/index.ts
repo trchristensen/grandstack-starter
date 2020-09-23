@@ -5,6 +5,7 @@ import neo4j from "neo4j-driver";
 import { makeAugmentedSchema } from "neo4j-graphql-js";
 import dotenv from "dotenv";
 import { initializeDatabase } from "./initialize";
+import { resolvers } from './resolvers';
 
 dotenv.config();
 
@@ -20,15 +21,16 @@ const app = express();
 
 const schema = makeAugmentedSchema({
   typeDefs,
+  resolvers,
   config: {
     query: {
-      exclude: [],
+      exclude: ["RecipeIngredientsAndQty"],
     },
     mutation: {
-      exclude: [],
+      exclude: ["RecipeIngredientsAndQty"],
     },
   },
-})
+});
 
 
 /*
